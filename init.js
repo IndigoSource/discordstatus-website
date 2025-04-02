@@ -59,7 +59,7 @@ const update = data => {
 
 const draw = data => {
     if(title === "loading...") {
-        title = `${data.discord_user.global_name}'s discord status`;
+        title = `${data.discord_user.display_name}'s Discord Status`;
         // Set favicon to user's avatar
         const faviconElem = document.getElementById("favicon");
         faviconElem.href = getPfpUrl(data.discord_user.id, data.discord_user.discrim, data.discord_user.avatar);
