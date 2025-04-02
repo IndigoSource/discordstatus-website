@@ -138,10 +138,18 @@ body {
     color: rgba(0, 0, 0, 0.5);
     transition: color 0.2s;
     padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .return:hover {
     color: rgba(0, 0, 0, 0.7);
+}
+
+.return svg {
+    width: 16px;
+    height: 16px;
 }
 
 a {
