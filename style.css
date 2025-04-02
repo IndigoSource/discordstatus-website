@@ -12,6 +12,7 @@
     --hidden-text-clr: rgb(170, 170, 170);
     --border-radius: 0.45rem;
     --backdrop-url: url("");
+    --website-background: url("");
     
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg-clr);
@@ -20,9 +21,14 @@
 
 body {
     height: 100vh;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-image: var(--website-background);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 #avatar {
@@ -34,6 +40,7 @@ body {
     padding: 1.75em;
     background: var(--fg-clr);
     border-radius: var(--border-radius);
+    margin-bottom: 1em;
 }
 
 .userinfo {
@@ -49,13 +56,13 @@ body {
     padding: 1em 1em;
 
     display: grid;
-    grid-template-columns: min-content 1fr max-content;
+    grid-template-columns: min-content 1fr;
     gap: 0 12px;
     align-items: center;
     grid-template-areas:
-        "avatar display view"
-        "avatar username view"
-        "avatar status view";
+        "avatar display"
+        "avatar username"
+        "avatar status";
 }
 
 #avatar {
@@ -67,15 +74,18 @@ body {
 }
 #display {
     grid-area: display;
+    color: var(--text-clr);
+    text-decoration: none;
+}
+
+#display:hover {
+    text-decoration: underline;
 }
 #status {
     display: flex;
     align-items: center;
     gap: 6px;
     grid-area: status;
-}
-#viewuser {
-    grid-area: view;
 }
 
 .activity {
@@ -125,9 +135,13 @@ body {
 }
 
 .return {
-    position: absolute;
-    top: 8px;
-    left: 8px;
+    color: rgba(0, 0, 0, 0.5);
+    transition: color 0.2s;
+    padding: 8px 16px;
+}
+
+.return:hover {
+    color: rgba(0, 0, 0, 0.7);
 }
 
 a {
@@ -136,10 +150,5 @@ a {
 
 .button {
     cursor: pointer;
-    padding: 4px 8px;
-
-    border: transparent;
-    border-radius: var(--border-radius);
-    color: var(--text-clr);
-    background: var(--accent-clr);
+    text-decoration: none;
 }

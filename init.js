@@ -33,12 +33,14 @@ const load = () => {
     // backdrop from config
     const root = document.querySelector(":root");
     root.style.setProperty("--backdrop-url", `url("${config.profile_backdrop_url}")`);
+    root.style.setProperty("--website-background", `url("${config.website_background_url}")`);
+    
     // init avatar in case it doesn't work
     const avaElem = document.getElementById("avatar");
     avaElem.src = getPfpUrl(userid, undefined, undefined);
-    // view user button redirect
-    const viewElem = document.getElementById("viewuser");
-    viewElem.href = `https://discord.com/users/${userid}`;
+    // set display name link
+    const displayElem = document.getElementById("display");
+    displayElem.href = `https://discord.com/users/${userid}`;
     console.log("Page init");
     
     lanyard({
@@ -56,7 +58,13 @@ const update = data => {
 }
 
 const draw = data => {
-    if(title === "loading...") title = `${data.discord_user.username}'s discord status`; 
+    if(title === "loading...") {
+        title = `${data.discord_user.global_name}'s discord status`;
+        // Set favicon to user's avatar
+        const faviconElem = document.getElementById("favicon");
+        faviconElem.href = getPfpUrl(data.discord_user.id, data.discord_user.discrim, data.discord_user.avatar);
+    }
+    
     const displayNameElem = document.getElementById("display");
     displayNameElem.innerText = data.discord_user.global_name;
 
@@ -115,36 +123,51 @@ const draw = data => {
             if(isSpotify) {
                 largeImageElem.src = data.spotify.album_art_url;
             } else {
-                // everything after "mp:" is the image id
-                // mp:external/ftBjuYHxeAs2FW1lMnr-_BxOSttEZIc1aAzg_W3nFlM/https/raw.githubusercontent.com/LeonardSSH/vscord/main/assets/icons/js.png
-                
                 if(act.assets) {
                     if(act.assets.large_image) {
-                        const imageid = act.assets.large_image.substring(3);
-                        largeImageElem.src = `https://media.discordapp.net/${imageid}`;
+                        let imageUrl;
+                        if(act.assets.large_image.startsWith('mp:')) {
+                            // Handle external images
+                            imageUrl = act.assets.large_image.substring(3);
+                        } else if (act.assets.large_image.startsWith('external/')) {
+                            // Direct external URL
+                            imageUrl = act.assets.large_image;
+                        } else {
+                            // Standard Discord CDN URL
+                            imageUrl = `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.png`;
+                        }
+                        largeImageElem.src = imageUrl;
                     }
                 } else {
-                    // no easy way of getting the icons from the discord api
+                    // Fallback to app icon
                     largeImageElem.src = `https://dcdn.dstn.to/app-icons/${act.application_id}`;
+                    largeImageElem.onerror = () => {
+                        // If the app icon fails, remove the image element
+                        actImageWrapper.removeChild(largeImageElem);
+                    };
                 }
             }
             actImageWrapper.appendChild(largeImageElem);
 
-            if(act.assets || isSpotify) {
-                if(act.assets.small_image || isSpotify) {
-                    // <img class="smallimage" draggable="false" width="32" height="32" src="" />
-                    const smallImageElem = document.createElement("img");
-                    smallImageElem.classList.add("smallimage");
-                    smallImageElem.draggable = false;
-                    smallImageElem.width = smallImageElem.height = 32;
-                    if(isSpotify) {
-                        smallImageElem.src = "https://developer.spotify.com/images/guidelines/design/icon3@2x.png";
-                    } else {
-                        const imageid = act.assets.small_image.substring(3);
-                        smallImageElem.src = `https://media.discordapp.net/${imageid}`;
-                    }
-                    actImageWrapper.appendChild(smallImageElem);
+            if(act.assets && act.assets.small_image) {
+                const smallImageElem = document.createElement("img");
+                smallImageElem.classList.add("smallimage");
+                smallImageElem.draggable = false;
+                smallImageElem.width = smallImageElem.height = 32;
+                
+                let imageUrl;
+                if(act.assets.small_image.startsWith('mp:')) {
+                    // Handle external images
+                    imageUrl = act.assets.small_image.substring(3);
+                } else if (act.assets.small_image.startsWith('external/')) {
+                    // Direct external URL
+                    imageUrl = act.assets.small_image;
+                } else {
+                    // Standard Discord CDN URL
+                    imageUrl = `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.small_image}.png`;
                 }
+                smallImageElem.src = imageUrl;
+                actImageWrapper.appendChild(smallImageElem);
             }
 
             // add class="act-images" to class="activity"
@@ -206,3 +229,13 @@ const formatTime = (ms) => {
 
 // start the websocket to automatically fetch the new details on presence update
 window.addEventListener("load", load);
+
+
+
+
+
+
+
+
+
+

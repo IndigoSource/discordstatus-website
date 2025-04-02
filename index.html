@@ -1,31 +1,25 @@
 <!DOCTYPE html>
 <html>
-    <!--
-        GNU GENERAL PUBLIC LICENSE
-        Version 3, 29 June 2007
-
-        https://github.com/lucaledd/discordstatus-website
-    -->
     <head>
         <title>loading...</title>
         <link rel="stylesheet" href="style.css">
+        <link rel="icon" type="image/png" id="favicon">
         <script src="lanyard.js"></script>
         <script src="config.js"></script>
         <script src="init.js"></script>
     </head>
     <body>
-        <a class="button return" type="button" href="https://indi.uno">return</a>
         <div class="display">
             <div class="userinfo" id="margin">
                 <img id="avatar" draggable="false" alt="profile picture" width="64" height="64"
-                    src="pfp.png" />
-                <span id="display"></span>
+                    src="https://cdn.discordapp.com/embed/avatars/0.png" />
+                <a id="display" href=""></a>
                 <span id="username"></span>
                 <span id="status"><img id="status-emoji" draggable="false" alt=" " height="16" /> <span id="status-text"></span></span>
-                <a id="viewuser" class="button" type="button">view user</a>
             </div>
             <div class="activities">
             </div>
         </div>
+        <a class="button return" type="button" href="https://indi.uno">return</a>
     </body>
 </html>
